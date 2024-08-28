@@ -7,12 +7,12 @@
     <button class="" type="submit" value="Log-in">Sign in</button>
 </form> -->
 {% if request.user.is_authenticated %}
-
 <script>
     window.location.href = '{% url "accounts:profile" %}';
 </script>
+{% endif %}
 
-<form action="{ url 'login' }" method="post">
+<form action="{% url 'login' %}" method="post">
     {% csrf_token %}
   
     <p class="h4 mb-4 font-weight-bold">Sign In</p>
@@ -37,6 +37,4 @@
 <p>
     <a href="{% url 'password_reset' %}">Forgotten Password?</a>
 </p>
-<p>
-    <a href="{% url 'accounts:register' %}">Help Center?</a></p>
 {% endblock %}
