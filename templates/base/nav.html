@@ -9,26 +9,6 @@
     }
 </style>
 
-<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="http://127.0.0.1:8000/blog/">Blog</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:8000/blog/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Features</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav> -->
-
-
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
     <h5 class="my-0 mr-md-auto font-weight-normal"><a class="text-dark" href="/">Demo</a></h5>
     {% if request.user.is_authenticated %}
@@ -38,7 +18,7 @@
         <a class="p-2 text-dark" href="#">Support</a>
         <a class="p-2 text-dark" href="{% url 'accounts:profile' %}">Dashboard</a>
         <a class="p-2 text-dark" href="{% url 'password_change' %}">Change Password</a>
-        <form method="post" action="{% url 'logout' %}">
+        <form class="p-2 text-dark" method="post" action="{% url 'logout' %}">
           {% csrf_token %}
           <button type="submit">logout</button>
        </form>

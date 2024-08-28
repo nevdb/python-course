@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 
 
 @login_required
@@ -26,9 +28,11 @@ def accounts_register(request):
             user.is_active = True
             user.save()
             current_site = get_current_site(request)
-            subject = 'Activate your Account'
-            user.email_user(subject=subject, message=message)
-            return HttpResponse('registered successfully and activation sent')
+            login(request, user)
+            return redirect('login')
+            # return HttpResponse('You have been registered successfully')
+            # return HttpResponseRedirect('login')
+
     else:
         registerForm = RegistrationForm()
     return render(request, 'registration/register.html', {'form': registerForm})
