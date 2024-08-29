@@ -3,6 +3,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, render, HttpResponseRedirect
 from django.template import loader
 from .forms import NewCommentForm
+from django.contrib.auth.decorators import login_required
 
 from .models import Post
 
@@ -30,11 +31,22 @@ def detail(request, post_id):
         comment_form = NewCommentForm()
     return render(request, "blog/detail.html", {"post": post, 'comments': user_comment, 'comments': comments, 'comment_form':comment_form} )
 
-    # try:
-    #     post = Post.objects.get(pk=post_id)
-    # except Post.DoesNotExist:
-    #     raise Http404("Question does not exist")
-    # return render(request, "blog/detail.html", {"post": post})
+@login_required
+def post_thumbsup(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    if post.thumbsups.filter(id=request.user.id):
+        post.thumbsups.remove(request.user)
+    else:
+        post.thumbsups.add(request.user)
 
-def vote(request, post_id):
-    return HttpResponse("You're voting on post %s." % post_id)
+    return render(request,'blog/detail.html', {"post": post} )
+
+@login_required
+def post_thumbsdown(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    if post.thumbsdowns.filter(id=request.user.id):
+        post.thumbsdowns.remove(request.user)
+    else:
+        post.thumbsdowns.add(request.user)
+
+    return render(request,'blog/detail.html', {"post": post} )
