@@ -17,11 +17,11 @@ class Tag(models.Model):
         ordering = ['title']
     
     def __str__(self):
-        return self.tag_text
+        return self.title
 
 class Post(models.Model):
     post_title = models.CharField(max_length=500, default=None)
-    tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
+    tag = models.ManyToManyField(Tag, blank=True, related_name='tag', default=None)
     post_text = models.TextField(max_length=1000, default=None)
     pub_date = models.DateTimeField(default=timezone.now)
     post_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_post', default=None)

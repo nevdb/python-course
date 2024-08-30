@@ -58,4 +58,14 @@
         <button type="submit" class="btn btn-primary btn-lg ">Submit</button>
     </form>
 </div>
+<div>
+    <h1>Tags</h1>
+    <div>
+    {% for tag in tags %}
+        <a href="/tag/{{tag.title}}">#{{ tag.title }}</a>
+    {% empty %}
+        <p>No tags yet.</p>
+    {% endfor %}
+    </div>
+</div>
 {% endblock %}

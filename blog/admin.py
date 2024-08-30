@@ -14,3 +14,5 @@ class CommentAdmin(admin.ModelAdmin):
 
 class LeadershipAdmin(AuthorAdmin, CommentAdmin):
     pass
+
+admin.site.register(models.Tag)
