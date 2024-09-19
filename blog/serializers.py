@@ -1,0 +1,27 @@
+from django.contrib.auth.models import Group, User
+from rest_framework import serializers
+from .models import Tag, Post, Comment
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag 
+        fields = ['title', 'id']
+        read_only_fields = ['id']
+
+
+class PostSerializer(serializers.ModelSerializer):
+   tags = TagSerializer(many=True, read_only=True)
+
+   class Meta:
+       model = Post
+       fields = ['id', 'post_title', 'post_text', 'pub_date', 'post_author' ]
+       read_only_fields = ['id', 'post_author', 'tag', 'thumbsups', 'thumbsdowns' ]
+
+class CommentSerialization(serializers.ModelSerializer):
+    post = PostSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        read_only_fields = ['id', 'comment_author_name', 'comment_author_email', 'comment_published_date ']

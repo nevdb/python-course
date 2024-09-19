@@ -9,6 +9,11 @@ from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from accounts.serializers import UserSerializer
 
 
 @login_required
@@ -36,3 +41,28 @@ def accounts_register(request):
     else:
         registerForm = RegistrationForm()
     return render(request, 'registration/register.html', {'form': registerForm})
+
+class ProfileList(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'accounts/profile_list.html'
+
+    def get(self, request):
+        queryset = User.objects.all()
+        return Response({'profiles': queryset})
+    
+class ProfileDetail(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'accounts/profile.html'
+
+    def get(self, request, pk):
+        profile = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(profile, data=request.data)
+        return Response({'serializer': serializer, 'profile': profile})
+
+    def post(self, request, pk):
+        profile = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(profile, data=request.data)
+        if not serializer.is_valid():
+            return Response({'serializer': serializer, 'profile': profile})
+        serializer.save()
+        return redirect('profile-list')    

@@ -6,8 +6,13 @@ from django.template import loader
 from .forms import NewCommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
-
 from .models import Post, Tag
+from rest_framework.views import APIView
+from blog.serializers import PostSerializer 
+from rest_framework import status
+from rest_framework.response import Response
+
+
 
 def index(request):
     latest_post_list = Post.objects.order_by("-pub_date")[:5]
@@ -55,20 +60,35 @@ def post_thumbsdown(request, pk):
 
     return render(request,'blog/detail.html', {"post": post} )
 
-class TagListView(ListView):
-    template_name = 'blog/tag.html'
-    context_object_name = 'taglist'
+# class TagListView(ListView):
+#     template_name = 'blog/tag.html'
+#     context_object_name = 'taglist'
 
-    def get_queryset(self):
-        content = {
-            'tag': self.kwargs['tag'],
-            'posts': Post.objects.filter(tag__title=self.kwargs['tag'])
-        } 
-        return content
+#     def get_queryset(self):
+#         content = {
+#             'tag': self.kwargs['tag'],
+#             'posts': Post.objects.filter(tag__title=self.kwargs['tag'])
+#         } 
+#         return content
+
+class TagListView(APIView):
+    """
+    List all tags
+    """
+    def get(self, request, format=None):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
     
+    def post(self, request, format=None):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 def tag_list(request):
     tag_list = Tag.objects.all()
     context = {
         "tag_list": tag_list,
     }
-    return context
+    return context 
